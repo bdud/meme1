@@ -37,33 +37,33 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.setupNavBar()
+        setupNavBar()
 
-        self.setupTextFields()
+        setupTextFields()
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.enableBarItems()
-        self.subscribeToKeyboardNotifications()
+        enableBarItems()
+        subscribeToKeyboardNotifications()
     }
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        self.unsubscribeFromKeyboardNotifications()
+        unsubscribeFromKeyboardNotifications()
     }
 
     // MARK: Keyboard Handling
 
     func keyboardWillShow(notification: NSNotification) {
-        if (self.bottomTextField.isFirstResponder()) {
-            self.view.frame.origin.y -= getKeyboardHeight(notification)
+        if (bottomTextField.isFirstResponder()) {
+            view.frame.origin.y -= getKeyboardHeight(notification)
         }
     }
 
     func keyboardWillHide(notification: NSNotification) {
-        if (self.bottomTextField.isFirstResponder()) {
-            self.view.frame.origin.y += getKeyboardHeight(notification)
+        if (bottomTextField.isFirstResponder()) {
+            view.frame.origin.y += getKeyboardHeight(notification)
         }
     }
 
@@ -100,9 +100,9 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
 
     func shareButtonPressed() {
-        let meme = self.save()
+        let meme = save()
         let activityViewController = UIActivityViewController(activityItems: [meme.memedImage], applicationActivities: nil)
-        self.presentViewController(activityViewController, animated: true, completion: nil)
+        presentViewController(activityViewController, animated: true, completion: nil)
     }
 
     func navbarCancelPressed() {
@@ -112,8 +112,8 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     // MARK: UITextFieldDelegate
 
     func textFieldDidBeginEditing(textField: UITextField) {
-        if (self.topTextField == textField && textField.text == defaultTopText) ||
-            (self.bottomTextField == textField && textField.text == defaultBottomText)
+        if (topTextField == textField && textField.text == defaultTopText) ||
+            (bottomTextField == textField && textField.text == defaultBottomText)
         {
             textField.text = "";
         }
@@ -133,7 +133,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
 
-            self.imageView.image = image
+            imageView.image = image
 
             // We cache this because we'll need it again if we draw the image
             // to a context after hiding parts of the screen, which is what we
@@ -144,14 +144,14 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
 
         }
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
 
 
         enableBarItems()
     }
 
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
         enableBarItems()
     }
 
@@ -159,7 +159,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.sourceType = sourceType
-        self.presentViewController(picker, animated: true, completion: nil)
+        presentViewController(picker, animated: true, completion: nil)
     }
 
     // MARK: Sharing
@@ -174,15 +174,15 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             moveTextFieldsToDisplayedImage(size)
         }
 
-        let imageViewBackground: UIColor = self.imageView.backgroundColor!
+        let imageViewBackground: UIColor = imageView.backgroundColor!
         // Make it temporarily transparent for this snapshot
-        self.imageView.backgroundColor = nil
+        imageView.backgroundColor = nil
 
         // Draw and capture the whole view.
         let memedImage = captureView()
 
         // Give imageView its background back
-        self.imageView.backgroundColor = imageViewBackground
+        imageView.backgroundColor = imageViewBackground
 
         showBars(true)
 
@@ -191,14 +191,13 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             moveTextFieldsToDisplayedImage(size)
         }
 
-        return Meme(originalImage: self.imageView.image!,
+        return Meme(originalImage: imageView.image!,
             memedImage: memedImage,
-            topText: self.topTextField.text,
-            bottomText: self.bottomTextField.text)
+            topText: topTextField.text,
+            bottomText: bottomTextField.text)
     }
 
     func captureView() -> UIImage {
-        let view = self.view
         UIGraphicsBeginImageContext(view.frame.size)
         view.drawViewHierarchyInRect(view.frame, afterScreenUpdates: true)
         let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -209,17 +208,17 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     // MARK: Miscellaneous
 
     func setupNavBar() {
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: UIBarButtonSystemItem.Action,
             target: self, action: "shareButtonPressed")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: UIBarButtonSystemItem.Cancel,
             target: self, action: "navbarCancelPressed")
     }
 
     func setupTextFields() {
-        self.topTextField.delegate = self
-        self.bottomTextField.delegate = self
+        topTextField.delegate = self
+        bottomTextField.delegate = self
 
         let memeTextAttributes = [
             NSStrokeColorAttributeName : UIColor.blackColor(),
@@ -228,24 +227,24 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             NSStrokeWidthAttributeName: strokeWidth
         ]
 
-        self.topTextField.defaultTextAttributes = memeTextAttributes
-        self.bottomTextField.defaultTextAttributes = memeTextAttributes
-        self.topTextField.textAlignment = NSTextAlignment.Center
-        self.bottomTextField.textAlignment = NSTextAlignment.Center
+        topTextField.defaultTextAttributes = memeTextAttributes
+        bottomTextField.defaultTextAttributes = memeTextAttributes
+        topTextField.textAlignment = NSTextAlignment.Center
+        bottomTextField.textAlignment = NSTextAlignment.Center
     }
 
     func enableBarItems() {
-        self.cameraButton.enabled =
+        cameraButton.enabled =
             UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-        self.navigationItem.leftBarButtonItem?.enabled = self.imageView.image != nil
-        self.navigationItem.rightBarButtonItem?.enabled = self.imageView.image != nil
-            || self.topTextField.text != defaultTopText
-            || self.bottomTextField.text != defaultBottomText
+        navigationItem.leftBarButtonItem?.enabled = imageView.image != nil
+        navigationItem.rightBarButtonItem?.enabled = imageView.image != nil
+            || topTextField.text != defaultTopText
+            || bottomTextField.text != defaultBottomText
     }
 
     func showBars(show: Bool) {
-        self.toolbar.hidden = !show
-        self.navigationController?.navigationBarHidden = !show
+        toolbar.hidden = !show
+        navigationController?.navigationBarHidden = !show
     }
 
 
@@ -262,9 +261,9 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         :param: origImageSize The size of the original image from album/camera.
     */
     func moveTextFieldsToDisplayedImage(origImageSize: CGSize) {
-        let scaledImageRect = AVMakeRectWithAspectRatioInsideRect(origImageSize, self.imageView.bounds)
+        let scaledImageRect = AVMakeRectWithAspectRatioInsideRect(origImageSize, imageView.bounds)
 
-        let parentView = self.topTextField.superview!
+        let parentView = topTextField.superview!
         let constraints = parentView.constraints()
         let imageOriginY = scaledImageRect.origin.y
         let imageHeight = scaledImageRect.size.height
@@ -283,19 +282,19 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
         parentView.removeConstraints(filteredConstraints)
 
-        var newConstraint = NSLayoutConstraint(item: self.topTextField,
+        var newConstraint = NSLayoutConstraint(item: topTextField,
             attribute: NSLayoutAttribute.Top,
             relatedBy: NSLayoutRelation.Equal,
-            toItem: self.imageView,
+            toItem: imageView,
             attribute: NSLayoutAttribute.Top,
             multiplier: 1.0,
             constant: textFieldVerticalBuffer + imageOriginY)
         parentView.addConstraint(newConstraint)
 
-        newConstraint = NSLayoutConstraint(item: self.bottomTextField,
+        newConstraint = NSLayoutConstraint(item: bottomTextField,
             attribute: NSLayoutAttribute.Bottom,
             relatedBy: NSLayoutRelation.Equal,
-            toItem: self.imageView,
+            toItem: imageView,
             attribute: NSLayoutAttribute.Bottom,
             multiplier: 1.0,
             constant: -(imageOriginY + textFieldVerticalBuffer))
@@ -312,7 +311,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         enableBarItems()
         // Pretends a perfectly fitting image is there, so the
         // text fields will move to just their buffer offsets.
-        moveTextFieldsToDisplayedImage(self.imageView.bounds.size)
+        moveTextFieldsToDisplayedImage(imageView.bounds.size)
     }
     
 }
