@@ -13,6 +13,7 @@
 		A95CB4041B8C9179004FBBFB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A95CB4031B8C9179004FBBFB /* Images.xcassets */; };
 		A95CB4071B8C9179004FBBFB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = A95CB4051B8C9179004FBBFB /* LaunchScreen.xib */; };
 		A95CB4131B8C9179004FBBFB /* MemeMeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A95CB4121B8C9179004FBBFB /* MemeMeTests.swift */; };
+		A9F4A33B1B95E2BE0015E971 /* Meme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F4A33A1B95E2BE0015E971 /* Meme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		A95CB40C1B8C9179004FBBFB /* MemeMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MemeMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A95CB4111B8C9179004FBBFB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A95CB4121B8C9179004FBBFB /* MemeMeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeMeTests.swift; sourceTree = "<group>"; };
+		A9F4A33A1B95E2BE0015E971 /* Meme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Meme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 				A95CB4031B8C9179004FBBFB /* Images.xcassets */,
 				A95CB4051B8C9179004FBBFB /* LaunchScreen.xib */,
 				A95CB3FA1B8C9179004FBBFB /* Supporting Files */,
+				A9F4A33A1B95E2BE0015E971 /* Meme.swift */,
 			);
 			path = MemeMe;
 			sourceTree = "<group>";
@@ -212,6 +215,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9F4A33B1B95E2BE0015E971 /* Meme.swift in Sources */,
 				A95CB3FF1B8C9179004FBBFB /* MemeEditorViewController.swift in Sources */,
 				A95CB3FD1B8C9179004FBBFB /* AppDelegate.swift in Sources */,
 			);
@@ -411,6 +415,7 @@
 				A95CB4181B8C9179004FBBFB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A95CB4191B8C9179004FBBFB /* Build configuration list for PBXNativeTarget "MemeMeTests" */ = {
 			isa = XCConfigurationList;
@@ -419,6 +424,7 @@
 				A95CB41B1B8C9179004FBBFB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

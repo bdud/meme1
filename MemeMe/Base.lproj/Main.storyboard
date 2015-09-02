@@ -32,7 +32,7 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="EWh-Ph-wvf">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="EWh-Ph-wvf">
                                 <rect key="frame" x="0.0" y="64" width="600" height="492"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -45,12 +45,12 @@
                                 </variation>
                             </imageView>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="BOTTOM" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="aCu-qg-T9i">
-                                <rect key="frame" x="16" y="514" width="568" height="17"/>
+                                <rect key="frame" x="16" y="504" width="568" height="17"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="TOP" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="trc-6F-W8u">
-                                <rect key="frame" x="16" y="89" width="568" height="17"/>
+                                <rect key="frame" x="16" y="99" width="568" height="17"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters"/>
                             </textField>
@@ -68,7 +68,7 @@
                             <constraint firstItem="EWh-Ph-wvf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="I8U-0q-JwU"/>
                             <constraint firstItem="EWh-Ph-wvf" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="O47-kF-6SX"/>
                             <constraint firstItem="aCu-qg-T9i" firstAttribute="leading" secondItem="EWh-Ph-wvf" secondAttribute="trailing" constant="-584" id="PXj-VO-1yH"/>
-                            <constraint firstItem="trc-6F-W8u" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="25" id="SE0-hO-zO2"/>
+                            <constraint firstItem="trc-6F-W8u" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="35" id="SE0-hO-zO2"/>
                             <constraint firstItem="s4I-cT-aVU" firstAttribute="top" secondItem="EWh-Ph-wvf" secondAttribute="bottom" id="TtO-ga-v2k"/>
                             <constraint firstItem="s4I-cT-aVU" firstAttribute="trailing" secondItem="EWh-Ph-wvf" secondAttribute="trailing" id="Wng-n8-R3v"/>
                             <constraint firstItem="EWh-Ph-wvf" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="XbX-2l-7xg"/>
@@ -81,7 +81,7 @@
                             <constraint firstItem="trc-6F-W8u" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="25" id="tFK-Ba-6kP"/>
                             <constraint firstItem="s4I-cT-aVU" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="uAW-hL-ENI"/>
                             <constraint firstItem="aCu-qg-T9i" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="xaX-et-9EZ"/>
-                            <constraint firstItem="s4I-cT-aVU" firstAttribute="top" secondItem="aCu-qg-T9i" secondAttribute="bottom" constant="25" id="y3R-Bu-bDI"/>
+                            <constraint firstItem="s4I-cT-aVU" firstAttribute="top" secondItem="aCu-qg-T9i" secondAttribute="bottom" constant="35" id="y3R-Bu-bDI"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -104,6 +104,7 @@
                         <outlet property="bottomTextField" destination="aCu-qg-T9i" id="H00-tf-EB4"/>
                         <outlet property="cameraButton" destination="dB4-hc-Noc" id="gcL-hB-moq"/>
                         <outlet property="imageView" destination="EWh-Ph-wvf" id="OO3-WN-AiR"/>
+                        <outlet property="toolbar" destination="s4I-cT-aVU" id="GaX-zk-JSO"/>
                         <outlet property="topTextField" destination="trc-6F-W8u" id="VHv-GU-cBe"/>
                     </connections>
                 </viewController>
