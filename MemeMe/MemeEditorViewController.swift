@@ -23,6 +23,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     // MARK: Properties
 
     var currentImageOriginalSize: CGSize?
+    var memes: [Meme]!
 
     // MARK: Outlets
 
@@ -36,6 +37,8 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        memes = (UIApplication.sharedApplication().delegate as! AppDelegate).memes
 
         setupNavBar()
 
@@ -101,6 +104,10 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     func shareButtonPressed() {
         let meme = save()
+        // Really twice? (arrays are value types in Swift)
+        memes.append(meme)
+        (UIApplication.sharedApplication().delegate as! AppDelegate).memes.append(meme)
+
         let activityViewController = UIActivityViewController(activityItems: [meme.memedImage], applicationActivities: nil)
         presentViewController(activityViewController, animated: true, completion: nil)
     }
