@@ -13,4 +13,11 @@ struct Meme {
     var memedImage: UIImage
     var topText: String
     var bottomText: String
+
+    static func proto() -> Meme {
+        return Meme(originalImage: UIImage(named: "proto-orig")!,
+            memedImage: UIImage(named: "proto-memed")!,
+            topText: "PROTO MEME TOP",
+            bottomText: "PROTO MEME BOTTOM")
+    }
 }

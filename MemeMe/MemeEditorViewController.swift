@@ -22,8 +22,13 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     // MARK: Properties
 
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     var currentImageOriginalSize: CGSize?
-    var memes: [Meme]!
+    var memes: [Meme] {
+        get {
+            return appDelegate.memes
+        }
+    }
 
     // MARK: Outlets
 
@@ -37,8 +42,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        memes = (UIApplication.sharedApplication().delegate as! AppDelegate).memes
 
         setupNavBar()
 
@@ -103,12 +106,16 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
 
     func shareButtonPressed() {
-        let meme = save()
-        // Really twice? (arrays are value types in Swift)
-        memes.append(meme)
-        (UIApplication.sharedApplication().delegate as! AppDelegate).memes.append(meme)
+        var meme = createMemedImage()
 
         let activityViewController = UIActivityViewController(activityItems: [meme.memedImage], applicationActivities: nil)
+        activityViewController.completionWithItemsHandler = { (activityType, completed, items, error) in
+            if completed {
+                // We only want to add to our "database" if the user actually went through
+                // with the share.
+                self.appDelegate.saveMeme(meme)
+            }
+        }
         presentViewController(activityViewController, animated: true, completion: nil)
     }
 
@@ -147,7 +154,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             // do when we share.
             currentImageOriginalSize = image.size
 
-            moveTextFieldsToDisplayedImage(currentImageOriginalSize!)
+            moveTextFieldsToDisplayedImage(AVMakeRectWithAspectRatioInsideRect(image.size, imageView.bounds))
 
 
         }
@@ -171,22 +178,27 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     // MARK: Sharing
 
-    func save() -> Meme {
+    func createMemedImage() -> Meme {
 
         // Don't want nav and status bars in the shared image
         showBars(false)
 
-        // imageView will have resized, so need to move those text fields again!
-        if let size = currentImageOriginalSize {
-            moveTextFieldsToDisplayedImage(size)
+        var scaledImageRect: CGRect?
+
+        if let imageSize = currentImageOriginalSize {
+            scaledImageRect = AVMakeRectWithAspectRatioInsideRect(imageSize, imageView.bounds)
+            // imageView will have resized because of hiding bars,
+            // so need to move those text fields again!
+            moveTextFieldsToDisplayedImage(scaledImageRect!)
         }
+
 
         let imageViewBackground: UIColor = imageView.backgroundColor!
         // Make it temporarily transparent for this snapshot
         imageView.backgroundColor = nil
 
         // Draw and capture the whole view.
-        let memedImage = captureView()
+        let memedImage = captureView(scaledImageRect)
 
         // Give imageView its background back
         imageView.backgroundColor = imageViewBackground
@@ -194,8 +206,8 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         showBars(true)
 
         // Move those text fields again now that bars are back and imageView has resized.
-        if let size = currentImageOriginalSize {
-            moveTextFieldsToDisplayedImage(size)
+        if let imageRect = scaledImageRect {
+            moveTextFieldsToDisplayedImage(imageRect)
         }
 
         return Meme(originalImage: imageView.image!,
@@ -204,11 +216,18 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             bottomText: bottomTextField.text)
     }
 
-    func captureView() -> UIImage {
+    func captureView(scaledImageRect: CGRect?) -> UIImage {
         UIGraphicsBeginImageContext(view.frame.size)
         view.drawViewHierarchyInRect(view.frame, afterScreenUpdates: true)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
+        var image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
+
+        if let imageRect = scaledImageRect {
+            // Convert rect to be relative to view (not imageView)
+            var cropRect = view.convertRect(imageRect, fromView: imageView)
+            // Crop to just the visible portion of the image inside imageView
+            image = UIImage(CGImage: CGImageCreateWithImageInRect(image.CGImage, cropRect));
+        }
         return image
     }
 
@@ -244,9 +263,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         cameraButton.enabled =
             UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
         navigationItem.leftBarButtonItem?.enabled = imageView.image != nil
-        navigationItem.rightBarButtonItem?.enabled = imageView.image != nil
-            || topTextField.text != defaultTopText
-            || bottomTextField.text != defaultBottomText
     }
 
     func showBars(show: Bool) {
@@ -259,17 +275,9 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         Moves the top and bottom text fields so that they are on the image, despite the image being aspect-fitted
         and thus not filling the entire image view.
     
-        Makes use of AVFoundation's AVMakeRectWithAspectRatioInsideRect thanks to helpful material at these
-        locations:
-
-        - https://discussions.udacity.com/t/best-way-to-position-textfields-in-mememe/10251/33?u=bill_103992
-        - http://nshipster.com/image-resizing/
-    
-        :param: origImageSize The size of the original image from album/camera.
+        :param: scaledImageRect The image as scaled inside the ImageView
     */
-    func moveTextFieldsToDisplayedImage(origImageSize: CGSize) {
-        let scaledImageRect = AVMakeRectWithAspectRatioInsideRect(origImageSize, imageView.bounds)
-
+    func moveTextFieldsToDisplayedImage(scaledImageRect: CGRect) {
         let parentView = topTextField.superview!
         let constraints = parentView.constraints()
         let imageOriginY = scaledImageRect.origin.y
@@ -318,7 +326,8 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         enableBarItems()
         // Pretends a perfectly fitting image is there, so the
         // text fields will move to just their buffer offsets.
-        moveTextFieldsToDisplayedImage(imageView.bounds.size)
+        moveTextFieldsToDisplayedImage(imageView.bounds)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
 }
