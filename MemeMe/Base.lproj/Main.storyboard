@@ -138,26 +138,49 @@
         <scene sceneID="x6C-k6-dcF">
             <objects>
                 <tableViewController title="Sent Memes" id="cAo-YK-dig" customClass="SentMemesTableViewController" customModule="MemeMe" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="RzE-oT-npW">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="112" sectionHeaderHeight="22" sectionFooterHeight="22" id="RzE-oT-npW">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SentMemeCell" id="PMf-Ur-FhG" customClass="SentMemesTableViewCell" customModule="MemeMe" customModuleProvider="target">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SentMemeCell" rowHeight="112" id="PMf-Ur-FhG" customClass="SentMemesTableViewCell" customModule="MemeMe" customModuleProvider="target">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="PMf-Ur-FhG" id="sJt-ia-UZu">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jh2-He-GuT">
-                                            <rect key="frame" x="16" y="11" width="475" height="21"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="BM8-M5-DFU">
+                                            <rect key="frame" x="5" y="5" width="100" height="100"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="100" id="Dom-NH-Pzs"/>
+                                                <constraint firstAttribute="height" constant="100" id="rBY-Yv-5XN"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="5Is-Cg-NPk">
+                                            <rect key="frame" x="113" y="44" width="479" height="23"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="centerY" secondItem="5Is-Cg-NPk" secondAttribute="centerY" constant="1.25" id="7I5-0r-QxM"/>
+                                        <constraint firstItem="5Is-Cg-NPk" firstAttribute="trailing" secondItem="sJt-ia-UZu" secondAttribute="trailingMargin" id="Jvx-P6-jQP"/>
+                                        <constraint firstItem="BM8-M5-DFU" firstAttribute="leading" secondItem="sJt-ia-UZu" secondAttribute="leading" constant="5" id="Mgn-tW-eRg"/>
+                                        <constraint firstItem="BM8-M5-DFU" firstAttribute="top" secondItem="sJt-ia-UZu" secondAttribute="top" constant="5" id="V5X-yD-M8I"/>
+                                        <constraint firstItem="5Is-Cg-NPk" firstAttribute="leading" secondItem="sJt-ia-UZu" secondAttribute="leadingMargin" constant="105" id="ZjA-iL-nX7"/>
+                                        <constraint firstItem="5Is-Cg-NPk" firstAttribute="top" secondItem="sJt-ia-UZu" secondAttribute="topMargin" constant="36" id="gQ6-Y7-vfe"/>
+                                        <constraint firstAttribute="bottom" secondItem="BM8-M5-DFU" secondAttribute="bottom" constant="5" id="iCX-re-YG8"/>
+                                    </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="iCX-re-YG8"/>
+                                            <exclude reference="7I5-0r-QxM"/>
+                                        </mask>
+                                    </variation>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <outlet property="topTextLabel" destination="jh2-He-GuT" id="uar-eJ-myU"/>
+                                    <outlet property="memeImageView" destination="BM8-M5-DFU" id="G9Y-RA-tHD"/>
+                                    <outlet property="memeText" destination="5Is-Cg-NPk" id="WfD-qN-24f"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

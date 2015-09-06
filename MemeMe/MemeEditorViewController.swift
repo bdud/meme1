@@ -185,13 +185,16 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
         var scaledImageRect: CGRect?
 
-        if let imageSize = currentImageOriginalSize {
-            scaledImageRect = AVMakeRectWithAspectRatioInsideRect(imageSize, imageView.bounds)
-            // imageView will have resized because of hiding bars,
-            // so need to move those text fields again!
-            moveTextFieldsToDisplayedImage(scaledImageRect!)
+        func adjustTextFields() {
+            if let imageSize = currentImageOriginalSize {
+                scaledImageRect = AVMakeRectWithAspectRatioInsideRect(imageSize, imageView.bounds)
+                moveTextFieldsToDisplayedImage(scaledImageRect!)
+            }
         }
 
+        // imageView will have resized because of hiding bars,
+        // so need to move the text fields.
+        adjustTextFields()
 
         let imageViewBackground: UIColor = imageView.backgroundColor!
         // Make it temporarily transparent for this snapshot
@@ -206,9 +209,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         showBars(true)
 
         // Move those text fields again now that bars are back and imageView has resized.
-        if let imageRect = scaledImageRect {
-            moveTextFieldsToDisplayedImage(imageRect)
-        }
+        adjustTextFields()
 
         return Meme(originalImage: imageView.image!,
             memedImage: memedImage,

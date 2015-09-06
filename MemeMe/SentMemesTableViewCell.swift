@@ -11,16 +11,16 @@ import UIKit
 class SentMemesTableViewCell: UITableViewCell {
 
     // MARK: Outlets
-
-    @IBOutlet weak var topTextLabel: UILabel!
+    @IBOutlet weak var memeImageView: UIImageView!
+    @IBOutlet weak var memeText: UILabel!
 
     // MARK: Properties
 
     var meme: Meme? {
         didSet {
-            println("Did set");
             if let m = meme {
-                topTextLabel.text = m.topText
+                memeText.text = "\(m.topText)…\(m.bottomText)"
+                memeImageView.image = m.memedImage
             }
         }
     }
