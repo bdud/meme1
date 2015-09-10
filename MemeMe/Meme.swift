@@ -14,10 +14,14 @@ struct Meme {
     var topText: String
     var bottomText: String
 
-    static func proto() -> Meme {
-        return Meme(originalImage: UIImage(named: "proto-orig")!,
-            memedImage: UIImage(named: "proto-memed")!,
-            topText: "PROTO MEME TOP",
-            bottomText: "PROTO MEME BOTTOM")
+    static func protos() -> [Meme] {
+        var memes = [Meme]()
+        for i in 1...4 {
+            memes.append(Meme(originalImage: UIImage(named: "proto-orig\(i)")!,
+                memedImage: UIImage(named: "proto-memed\(i)")!,
+                topText: "TOP", bottomText: "BOTTOM"))
+
+        }
+        return memes
     }
 }

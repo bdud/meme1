@@ -24,14 +24,13 @@ class SentMemesTableViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         tableView.reloadData()
     }
-
+    
 
     // MARK: Navigation
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         println("Segue to \(segue.destinationViewController)")
     }
-
 
     // MARK: Actions
 
