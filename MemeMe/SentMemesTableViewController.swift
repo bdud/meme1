@@ -22,18 +22,9 @@ class SentMemesTableViewController: UITableViewController {
     // MARK: Overrides
 
     override func viewWillAppear(animated: Bool) {
+        // FIXME Performance: better to subscribe to data changes
+        // and reload only when necessary.
         tableView.reloadData()
     }
-    
-
-    // MARK: Navigation
-
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        println("Segue to \(segue.destinationViewController)")
-    }
-
-    // MARK: Actions
-
-    
 
 }

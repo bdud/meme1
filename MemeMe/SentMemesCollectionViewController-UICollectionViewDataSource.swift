@@ -1,5 +1,5 @@
 //
-//  SentMemesCollectionViewController-UICollectionViewDataSource.swift
+//  SentMemesCollectionViewController+UICollectionViewDataSource.swift
 //  MemeMe
 //
 //  Created by Bill Dawson on 9/3/15.
@@ -8,11 +8,13 @@
 
 import UIKit
 
-extension SentMemesCollectionViewController: UICollectionViewDataSource {
+extension SentMemesCollectionViewController {
+
+    // MARK: UICollectionViewDataSource
+    
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1
     }
-
 
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return memes.count

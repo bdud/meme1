@@ -114,6 +114,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
                 // We only want to add to our "database" if the user actually went through
                 // with the share.
                 self.appDelegate.saveMeme(meme)
+                self.dismissViewControllerAnimated(true, completion: nil)
             }
         }
         presentViewController(activityViewController, animated: true, completion: nil)

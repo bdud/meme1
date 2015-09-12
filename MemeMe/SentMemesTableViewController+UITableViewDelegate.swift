@@ -2,16 +2,17 @@
 //  SentMemesTableViewController+UITableViewDelegate.swift
 //  MemeMe
 //
-//  Created by Bill Dawson on 9/10/15.
+//  Created by Bill Dawson on 9/12/15.
 //  Copyright (c) 2015 Bill Dawson. All rights reserved.
 //
 
 import UIKit
 
 extension SentMemesTableViewController {
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let meme = memes[indexPath.row]
-        
 
+    // MARK: UITableViewDelegate
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        MemeDetailViewController.pushInstanceAtopController(self, withMeme: memes[indexPath.row])
     }
 }

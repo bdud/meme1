@@ -10,29 +10,21 @@ import UIKit
 
 class SentMemesCollectionViewController: UICollectionViewController {
 
-    // MARK: Constants
-
-    let cellReuseId = "MemeCell"
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-
     // MARK: Properties
 
+    let cellReuseId = "SentMemeCell"
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+
     var memes: [Meme] {
-        get {
-            return appDelegate.memes
-        }
+        return appDelegate.memes
     }
 
     // MARK: Overrides
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        
-    }
-
     override func viewWillAppear(animated: Bool) {
+        // FIXME Performance: better to subscribe to data changes
+        // and reload only when necessary.
         self.collectionView?.reloadData()
-    }
 
+    }
 }

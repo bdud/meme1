@@ -16,9 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-          // TODO remove
-        // Sample meme
-        for m in Meme.protos() {
+        // TODO remove
+        // Sample memes
+        for m in Meme.samples() {
             saveMeme(m)
         }
 

@@ -10,6 +10,8 @@ import UIKit
 
 extension SentMemesTableViewController {
 
+    // MARK: UITableViewDataSource
+
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }

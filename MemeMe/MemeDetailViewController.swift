@@ -11,26 +11,19 @@ import UIKit
 class MemeDetailViewController: UIViewController {
 
     @IBOutlet weak var imageView: UIImageView!
-    override func viewDidLoad() {
-        super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+    var meme: Meme?
+    override func viewWillAppear(animated: Bool) {
+        if let meme = meme {
+            imageView.image = meme.memedImage
+        }
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    // MARK: Static/Class methods
+    class func pushInstanceAtopController(sourceViewController: UIViewController, withMeme meme: Meme) {
+        if let controller = sourceViewController.storyboard?.instantiateViewControllerWithIdentifier("MemeDetailViewController") as? MemeDetailViewController {
+            controller.meme = meme
+            sourceViewController.navigationController?.pushViewController(controller, animated: true)
+        }
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

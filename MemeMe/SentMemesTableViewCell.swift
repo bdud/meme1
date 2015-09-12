@@ -11,6 +11,7 @@ import UIKit
 class SentMemesTableViewCell: UITableViewCell {
 
     // MARK: Outlets
+    
     @IBOutlet weak var memeImageView: UIImageView!
     @IBOutlet weak var memeText: UILabel!
 
