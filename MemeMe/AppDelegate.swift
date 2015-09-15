@@ -8,6 +8,12 @@
 
 import UIKit
 
+struct AppConstants {
+    static let MemeChangedNotification = "MemeChangedNotification"
+    static let OriginalMemeKey = "OriginalMeme"
+    static let NewMemeKey = "NewMeme"
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -19,14 +25,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // TODO remove
         // Sample memes
         for m in Meme.samples() {
-            saveMeme(m)
+            saveNewMeme(m)
         }
 
         return true
     }
 
-    func saveMeme(meme: Meme) {
+    func saveNewMeme(meme: Meme) {
         memes.append(meme)
+    }
+
+    func updateExistingMeme(existingMeme: Meme, withNewMeme updatedMeme: Meme) {
+        if let index = find(memes, existingMeme) {
+            memes.removeAtIndex(index)
+            memes.insert(updatedMeme, atIndex: index)
+        }
+        let userInfo = [AppConstants.OriginalMemeKey: existingMeme.wrap(),
+            AppConstants.NewMemeKey: updatedMeme.wrap()]
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            AppConstants.MemeChangedNotification,
+            object: self,
+            userInfo: userInfo)
     }
 
     func deleteMeme(meme: Meme) {

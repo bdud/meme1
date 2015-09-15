@@ -9,6 +9,10 @@
 import UIKit
 import AVFoundation
 
+enum EditorMode {
+    case Add, Edit
+}
+
 class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
     // MARK: Constants
@@ -27,6 +31,16 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     var memes: [Meme] {
         get {
             return appDelegate.memes
+        }
+    }
+    var mode: EditorMode = EditorMode.Add // default
+
+    // When in .Edit mode, this is the meme being edited.
+    var editingMeme: Meme?
+
+    var dirty: Bool = false {
+        didSet {
+            enableBarItems()
         }
     }
 
@@ -52,6 +66,13 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         super.viewWillAppear(animated)
         enableBarItems()
         subscribeToKeyboardNotifications()
+        if mode == .Edit {
+            if let originalMeme = editingMeme {
+                topTextField.text = originalMeme.topText
+                bottomTextField.text = originalMeme.bottomText
+                replaceImage(originalMeme.originalImage)
+            }
+        }
     }
 
     override func viewWillDisappear(animated: Bool) {
@@ -105,6 +126,10 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         pickImageWithSourceType(UIImagePickerControllerSourceType.PhotoLibrary)
     }
 
+    @IBAction func textFieldEditingChanged(sender: AnyObject) {
+        dirty = true
+    }
+
     func shareButtonPressed() {
         var meme = createMemedImage()
 
@@ -113,7 +138,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             if completed {
                 // We only want to add to our "database" if the user actually went through
                 // with the share.
-                self.appDelegate.saveMeme(meme)
+                self.appDelegate.saveNewMeme(meme)
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
         }
@@ -122,6 +147,13 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     func navbarCancelPressed() {
         reset()
+    }
+
+    func navbarDonePressed() {
+        if let originalMeme = editingMeme {
+            self.appDelegate.updateExistingMeme(originalMeme, withNewMeme: createMemedImage())
+        }
+        dismissViewControllerAnimated(true, completion: nil)
     }
 
     // MARK: UITextFieldDelegate
@@ -147,17 +179,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-
-            imageView.image = image
-
-            // We cache this because we'll need it again if we draw the image
-            // to a context after hiding parts of the screen, which is what we
-            // do when we share.
-            currentImageOriginalSize = image.size
-
-            moveTextFieldsToDisplayedImage(AVMakeRectWithAspectRatioInsideRect(image.size, imageView.bounds))
-
-
+            replaceImage(image)
         }
         dismissViewControllerAnimated(true, completion: nil)
 
@@ -236,12 +258,21 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     // MARK: Miscellaneous
 
     func setupNavBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: UIBarButtonSystemItem.Action,
-            target: self, action: "shareButtonPressed")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: UIBarButtonSystemItem.Cancel,
-            target: self, action: "navbarCancelPressed")
+        if (mode == .Add) {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: UIBarButtonSystemItem.Action,
+                target: self, action: "shareButtonPressed")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: UIBarButtonSystemItem.Cancel,
+                target: self, action: "navbarCancelPressed")
+        } else {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: UIBarButtonSystemItem.Cancel,
+                target: self, action: "navbarCancelPressed")
+            navigationItem.rightBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: UIBarButtonSystemItem.Done,
+                target: self, action: "navbarDonePressed")
+        }
     }
 
     func setupTextFields() {
@@ -262,9 +293,17 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
 
     func enableBarItems() {
+        navigationController?.navigationBar.hidden = false
         cameraButton.enabled =
             UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-        navigationItem.leftBarButtonItem?.enabled = imageView.image != nil
+        if (mode == .Add) {
+            // Share button
+            navigationItem.leftBarButtonItem?.enabled = imageView.image != nil
+        } else {
+            // Done button
+            navigationItem.rightBarButtonItem?.enabled = dirty
+        }
+
     }
 
     func showBars(show: Bool) {
@@ -330,6 +369,23 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         // text fields will move to just their buffer offsets.
         moveTextFieldsToDisplayedImage(imageView.bounds)
         dismissViewControllerAnimated(true, completion: nil)
+    }
+
+    func replaceImage(image: UIImage) {
+        if let replacedImage = imageView.image {
+            // We're replacing something already in there,
+            // so this makes our editing session dirty.
+            dirty = true
+        }
+        
+        imageView.image = image
+
+        // We cache this because we'll need it again if we draw the image
+        // to a context after hiding parts of the screen, which is what we
+        // do when we share.
+        currentImageOriginalSize = image.size
+
+        moveTextFieldsToDisplayedImage(AVMakeRectWithAspectRatioInsideRect(image.size, imageView.bounds))
     }
     
 }

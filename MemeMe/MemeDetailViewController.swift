@@ -10,6 +10,17 @@ import UIKit
 
 class MemeDetailViewController: UIViewController {
 
+    // MARK: Static/Class methods
+
+    class func pushInstanceAtopController(sourceViewController: UIViewController, withMeme meme: Meme) {
+        if let controller = sourceViewController.storyboard?.instantiateViewControllerWithIdentifier("MemeDetailViewController") as? MemeDetailViewController {
+            controller.meme = meme
+            sourceViewController.navigationController?.pushViewController(controller, animated: true)
+        }
+    }
+
+    // MARK: Instance properties
+    
     @IBOutlet weak var imageView: UIImageView!
 
     var meme: Meme?
@@ -18,18 +29,40 @@ class MemeDetailViewController: UIViewController {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: "onMemeChanged:", name: AppConstants.MemeChangedNotification, object: nil)
+
         tabBarController?.tabBar.hidden = true
         if let meme = meme {
             imageView.image = meme.memedImage
         }
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: "editAction:")
     }
 
-    // MARK: Static/Class methods
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if let id = segue.identifier {
+            if (id == "DetailToEditor") {
+                let editorController = segue.destinationViewController.topViewController as! MemeEditorViewController
+                editorController.mode = EditorMode.Edit
+                editorController.editingMeme = meme
+            }
+        }
+    }
 
-    class func pushInstanceAtopController(sourceViewController: UIViewController, withMeme meme: Meme) {
-        if let controller = sourceViewController.storyboard?.instantiateViewControllerWithIdentifier("MemeDetailViewController") as? MemeDetailViewController {
-            controller.meme = meme
-            sourceViewController.navigationController?.pushViewController(controller, animated: true)
+    // MARK: Notification Observation
+
+    func onMemeChanged(notification: NSNotification) {
+        if let userInfo = notification.userInfo as? Dictionary<String, WrappedMeme> {
+            if userInfo[AppConstants.OriginalMemeKey]?.unwrap() == meme {
+                meme = userInfo[AppConstants.NewMemeKey]?.unwrap()
+                if let meme = meme {
+                    imageView.image = meme.memedImage
+                } else {
+                    imageView.image = nil
+                }
+            }
         }
     }
 
@@ -59,6 +92,13 @@ class MemeDetailViewController: UIViewController {
     @IBAction func shareAction(sender: AnyObject) {
         if let meme = meme {
             presentViewController(UIActivityViewController(activityItems: [meme.memedImage], applicationActivities: nil), animated: true, completion: nil)
+        }
+    }
+
+    func editAction(sender: AnyObject) {
+        if let editorController = storyboard?.instantiateViewControllerWithIdentifier("MemeEditor") as? MemeEditorViewController {
+            editorController.mode = EditorMode.Edit
+            performSegueWithIdentifier("DetailToEditor", sender: nil)
         }
     }
 }
