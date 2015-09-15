@@ -323,15 +323,35 @@
                                 <rect key="frame" x="36" y="65" width="529" height="470"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5fq-T1-hrU">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem systemItem="action" id="Ozb-n8-duD">
+                                        <connections>
+                                            <action selector="shareAction:" destination="Ixt-o3-LBO" id="2vU-3s-r8m"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="cOt-fm-O50"/>
+                                    <barButtonItem systemItem="trash" id="ZiV-4f-c4E">
+                                        <connections>
+                                            <action selector="trashAction:" destination="Ixt-o3-LBO" id="4Nm-2F-guT"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Mpa-Qw-WSB" firstAttribute="leading" secondItem="GmP-yP-VBl" secondAttribute="leadingMargin" constant="20" id="7R8-05-OWg"/>
+                            <constraint firstItem="5fq-T1-hrU" firstAttribute="bottom" secondItem="Zla-dY-n8z" secondAttribute="top" id="9d1-eC-w9c"/>
                             <constraint firstItem="Mpa-Qw-WSB" firstAttribute="top" secondItem="pxz-u7-eEJ" secondAttribute="bottom" constant="45" id="lzD-pZ-nK4"/>
+                            <constraint firstItem="5fq-T1-hrU" firstAttribute="centerX" secondItem="Mpa-Qw-WSB" secondAttribute="centerX" id="rHd-Np-0ck"/>
                             <constraint firstItem="Mpa-Qw-WSB" firstAttribute="centerY" secondItem="GmP-yP-VBl" secondAttribute="centerY" id="rOG-8I-ouK"/>
+                            <constraint firstItem="5fq-T1-hrU" firstAttribute="leading" secondItem="GmP-yP-VBl" secondAttribute="leading" id="ziQ-Fz-fmO"/>
                             <constraint firstItem="Mpa-Qw-WSB" firstAttribute="centerX" secondItem="GmP-yP-VBl" secondAttribute="centerX" id="zlZ-Ns-DKY"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
                     <connections>
                         <outlet property="imageView" destination="Mpa-Qw-WSB" id="dsw-x6-Q6K"/>
                     </connections>

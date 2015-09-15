@@ -24,3 +24,12 @@ struct Meme {
         return memes
     }
 }
+
+extension Meme: Equatable {}
+
+func ==(lhs: Meme, rhs: Meme) -> Bool {
+    return lhs.originalImage == rhs.originalImage &&
+    lhs.memedImage == rhs.memedImage &&
+    lhs.topText == rhs.topText &&
+    lhs.bottomText == rhs.bottomText
+}

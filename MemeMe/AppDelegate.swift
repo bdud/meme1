@@ -29,5 +29,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         memes.append(meme)
     }
 
+    func deleteMeme(meme: Meme) {
+        if let index = find(memes, meme) {
+            memes.removeAtIndex(index)
+        }
+    }
+
 }
 
