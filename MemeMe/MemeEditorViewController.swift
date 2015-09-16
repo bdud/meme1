@@ -146,7 +146,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
 
     func navbarCancelPressed() {
-        reset()
+        dismissViewControllerAnimated(true, completion: nil)
     }
 
     func navbarDonePressed() {
@@ -293,7 +293,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
 
     func enableBarItems() {
-        navigationController?.navigationBar.hidden = false
         cameraButton.enabled =
             UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
         if (mode == .Add) {
@@ -360,24 +359,13 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     }
     
-    func reset() {
-        imageView.image = nil
-        topTextField.text = defaultTopText
-        bottomTextField.text = defaultBottomText
-        enableBarItems()
-        // Pretends a perfectly fitting image is there, so the
-        // text fields will move to just their buffer offsets.
-        moveTextFieldsToDisplayedImage(imageView.bounds)
-        dismissViewControllerAnimated(true, completion: nil)
-    }
-
     func replaceImage(image: UIImage) {
         if let replacedImage = imageView.image {
             // We're replacing something already in there,
             // so this makes our editing session dirty.
             dirty = true
         }
-        
+
         imageView.image = image
 
         // We cache this because we'll need it again if we draw the image
