@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MemeDetailViewController: UIViewController {
+class MemeDetailViewController: UIViewController, MemeEditorDelegate {
 
     // MARK: Static/Class methods
 
@@ -30,9 +30,6 @@ class MemeDetailViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
 
-        NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "onMemeChanged:", name: AppConstants.MemeChangedNotification, object: nil)
-
         tabBarController?.tabBar.hidden = true
         if let meme = meme {
             imageView.image = meme.memedImage
@@ -47,21 +44,7 @@ class MemeDetailViewController: UIViewController {
                 let editorController = segue.destinationViewController.topViewController as! MemeEditorViewController
                 editorController.mode = EditorMode.Edit
                 editorController.editingMeme = meme
-            }
-        }
-    }
-
-    // MARK: Notification Observation
-
-    func onMemeChanged(notification: NSNotification) {
-        if let userInfo = notification.userInfo as? Dictionary<String, WrappedMeme> {
-            if userInfo[AppConstants.OriginalMemeKey]?.unwrap() == meme {
-                meme = userInfo[AppConstants.NewMemeKey]?.unwrap()
-                if let meme = meme {
-                    imageView.image = meme.memedImage
-                } else {
-                    imageView.image = nil
-                }
+                editorController.delegate = self
             }
         }
     }
@@ -96,9 +79,13 @@ class MemeDetailViewController: UIViewController {
     }
 
     func editAction(sender: AnyObject) {
-        if let editorController = storyboard?.instantiateViewControllerWithIdentifier("MemeEditor") as? MemeEditorViewController {
-            editorController.mode = EditorMode.Edit
-            performSegueWithIdentifier("DetailToEditor", sender: nil)
-        }
+        performSegueWithIdentifier("DetailToEditor", sender: nil)
     }
+
+    // MARK: MemeEditorDelegate
+
+    func memeEditor(memeEditor: MemeEditorViewController, didSaveMeme meme: Meme) {
+        self.meme = meme
+    }
+
 }

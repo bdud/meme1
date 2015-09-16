@@ -13,6 +13,10 @@ enum EditorMode {
     case Add, Edit
 }
 
+protocol MemeEditorDelegate {
+    func memeEditor(memeEditor: MemeEditorViewController, didSaveMeme meme: Meme)
+}
+
 class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
     // MARK: Constants
@@ -27,12 +31,18 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     // MARK: Properties
 
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+
+    var delegate: MemeEditorDelegate?
+
     var currentImageOriginalSize: CGSize?
     var memes: [Meme] {
         get {
             return appDelegate.memes
         }
     }
+
+    // MARK: Properties for Editing
+
     var mode: EditorMode = EditorMode.Add // default
 
     // When in .Edit mode, this is the meme being edited.
@@ -43,6 +53,8 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             enableBarItems()
         }
     }
+
+    var originalLoaded: Bool = false
 
     // MARK: Outlets
 
@@ -64,14 +76,40 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+
         enableBarItems()
         subscribeToKeyboardNotifications()
-        if mode == .Edit {
+        if mode == .Edit && !originalLoaded {
+            originalLoaded = true
             if let originalMeme = editingMeme {
                 topTextField.text = originalMeme.topText
                 bottomTextField.text = originalMeme.bottomText
                 replaceImage(originalMeme.originalImage)
+                // The image view won't be done sizing yet, so
+                // we'll wait until viewDidAppear to move the text
+                // fields to their proper place.
+                // To avoid the ugly flash of the text field
+                // moving from one place to another, we'll hide
+                // them here and then they'll be unhidden once
+                // they've moved to their proper place.
+                // TODO even better would be an alpha animation
+                // from fully transparency to full opacity.
+                // Or simply an animation of the new constraints
+                // in moveTextFieldsToDisplayedImage instead of
+                // hiding them and showing them -- a smooth translation
+                // animation would not be as jarring as either the abrupt
+                // move or the hide/show.
+
+                topTextField.hidden = true
+                bottomTextField.hidden = true
             }
+        }
+    }
+
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if let size = currentImageOriginalSize {
+            moveTextFieldsToDisplayedImage(AVMakeRectWithAspectRatioInsideRect(size, imageView.bounds))
         }
     }
 
@@ -139,6 +177,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
                 // We only want to add to our "database" if the user actually went through
                 // with the share.
                 self.appDelegate.saveNewMeme(meme)
+                self.delegate?.memeEditor(self, didSaveMeme: meme)
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
         }
@@ -151,7 +190,9 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
     func navbarDonePressed() {
         if let originalMeme = editingMeme {
-            self.appDelegate.updateExistingMeme(originalMeme, withNewMeme: createMemedImage())
+            let newMeme = createMemedImage()
+            appDelegate.updateExistingMeme(originalMeme, withNewMeme: newMeme)
+            delegate?.memeEditor(self, didSaveMeme: newMeme)
         }
         dismissViewControllerAnimated(true, completion: nil)
     }
@@ -357,9 +398,17 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
         parentView.updateConstraintsIfNeeded()
 
+        topTextField.hidden = false
+        bottomTextField.hidden = false
+
     }
     
     func replaceImage(image: UIImage) {
+        // We cache this because we'll need it again if we draw the image
+        // to a context after hiding parts of the screen, which is what we
+        // do when we share.
+        currentImageOriginalSize = image.size
+
         if let replacedImage = imageView.image {
             // We're replacing something already in there,
             // so this makes our editing session dirty.
@@ -367,12 +416,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         }
 
         imageView.image = image
-
-        // We cache this because we'll need it again if we draw the image
-        // to a context after hiding parts of the screen, which is what we
-        // do when we share.
-        currentImageOriginalSize = image.size
-
         moveTextFieldsToDisplayedImage(AVMakeRectWithAspectRatioInsideRect(image.size, imageView.bounds))
     }
     

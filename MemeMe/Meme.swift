@@ -24,9 +24,6 @@ struct Meme {
         return memes
     }
 
-    func wrap() -> WrappedMeme {
-        return WrappedMeme(meme:self)
-    }
 }
 
 extension Meme: Equatable {}
@@ -36,19 +33,4 @@ func ==(lhs: Meme, rhs: Meme) -> Bool {
     lhs.memedImage == rhs.memedImage &&
     lhs.topText == rhs.topText &&
     lhs.bottomText == rhs.bottomText
-}
-
-// Needed for places where AnyObject is required, such as the
-// userInfo parameter to postNotification
-
-class WrappedMeme {
-    let _wrapped: Meme
-
-    init(meme: Meme) {
-        _wrapped = meme
-    }
-
-    func unwrap() -> Meme {
-        return _wrapped
-    }
 }
