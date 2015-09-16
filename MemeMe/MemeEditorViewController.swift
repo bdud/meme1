@@ -29,6 +29,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     let textFieldVerticalBuffer: CGFloat = 20.0
 
     // MARK: Properties
+    private var kvoContext = 0
 
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
 
@@ -72,6 +73,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         setupNavBar()
 
         setupTextFields()
+
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -79,6 +81,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
         enableBarItems()
         subscribeToKeyboardNotifications()
+        subscribeToImageViewBounds()
         if mode == .Edit && !originalLoaded {
             originalLoaded = true
             if let originalMeme = editingMeme {
@@ -116,6 +119,32 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         unsubscribeFromKeyboardNotifications()
+        unsubscribeFromImageViewBounds()
+    }
+
+    // MARK: ImageView Bounds Handling
+    // For moving text fields when the image view
+    // bounds change.
+
+    func subscribeToImageViewBounds() {
+        imageView.addObserver(self, forKeyPath: "bounds", options: .New, context: &kvoContext)
+    }
+
+    func unsubscribeFromImageViewBounds() {
+        imageView.removeObserver(self, forKeyPath: "bounds")
+    }
+
+    override func observeValueForKeyPath(keyPath: String, ofObject object: AnyObject, change: [NSObject : AnyObject], context: UnsafeMutablePointer<Void>) {
+        // We only care that it changed, period.  We don't need to know the values
+        // here.
+        bottomTextField.hidden = true
+        topTextField.hidden = true
+        if let imageSize = currentImageOriginalSize {
+            moveTextFieldsToDisplayedImage(AVMakeRectWithAspectRatioInsideRect(imageSize, imageView.bounds))
+        } else {
+            moveTextFieldsToDisplayedImage(AVMakeRectWithAspectRatioInsideRect(imageView.bounds.size, imageView.bounds))
+        }
+
     }
 
     // MARK: Keyboard Handling
